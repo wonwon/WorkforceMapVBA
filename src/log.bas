@@ -1,37 +1,39 @@
-Option Explicit
+Sub WriteLog(logType As String, message As String, Optional moduleName As String = "", Optional lineNumber As String = "")
+    ' ログを記録するサブルーチン（エラー発生時のモジュール名・行数も記録）
 
-Sub WriteLog(logType As String, message As String)
-    ' ログを記録する共通関数（フォルダ構成に対応）
-    Dim logFile As Object
-    Dim logFolder As String, logFilePath As String
-    Dim fs As Object
+    Dim logWs As Worksheet
+    Dim lastRow As Long
+    Dim logMessage As String
+    Dim logTime As String
 
-    ' ログフォルダのパス
-    logFolder = ThisWorkbook.Path & "\data\logs\"
-    
-    ' フォルダが存在しない場合は作成
-    Set fs = CreateObject("Scripting.FileSystemObject")
-    If Not fs.FolderExists(logFolder) Then
-        fs.CreateFolder logFolder
+    ' シートの設定（ログ専用シートを作成）
+    On Error Resume Next
+    Set logWs = ThisWorkbook.Sheets("ログ")
+    If logWs Is Nothing Then
+        Set logWs = ThisWorkbook.Sheets.Add
+        logWs.Name = "ログ"
+        logWs.Cells(1, 1).Value = "日時"
+        logWs.Cells(1, 2).Value = "タイプ"
+        logWs.Cells(1, 3).Value = "モジュール"
+        logWs.Cells(1, 4).Value = "行番号"
+        logWs.Cells(1, 5).Value = "メッセージ"
     End If
-    
-    ' ログファイル（本日の日付ごとに新規作成）
-    logFilePath = logFolder & "log_" & Format(Date, "yyyymmdd") & ".txt"
-    
-    ' ログを追記モードで開く
-    Set logFile = fs.OpenTextFile(logFilePath, 8, True)
-    logFile.WriteLine Format(Now, "yyyy/mm/dd HH:MM:SS") & " [" & logType & "] " & message
-    logFile.Close
-    
-    ' エラーログ（特定のエラーのみ保存）
-    If logType = "ERROR" Then
-        logFilePath = logFolder & "error_log.txt"
-        Set logFile = fs.OpenTextFile(logFilePath, 8, True)
-        logFile.WriteLine Format(Now, "yyyy/mm/dd HH:MM:SS") & " [ERROR] " & message
-        logFile.Close
+    On Error GoTo 0
+
+    ' ログ記録
+    lastRow = logWs.Cells(logWs.Rows.Count, 1).End(xlUp).Row + 1
+    logTime = Format(Now, "yyyy/mm/dd HH:MM:SS")
+
+    ' エラー発生時にモジュール名と行番号を記録
+    If logType = "ERROR" And moduleName <> "" And lineNumber <> "" Then
+        logMessage = "[エラー] " & message & " (モジュール: " & moduleName & ", 行: " & lineNumber & ")"
+    Else
+        logMessage = message
     End If
-    
-    ' オブジェクト解放
-    Set logFile = Nothing
-    Set fs = Nothing
+
+    logWs.Cells(lastRow, 1).Value = logTime
+    logWs.Cells(lastRow, 2).Value = logType
+    logWs.Cells(lastRow, 3).Value = moduleName
+    logWs.Cells(lastRow, 4).Value = lineNumber
+    logWs.Cells(lastRow, 5).Value = logMessage
 End Sub
