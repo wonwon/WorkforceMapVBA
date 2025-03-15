@@ -1,0 +1,20 @@
+# Ignore Excel files to prevent sensitive data from being committed
+*.xlsx
+*.xlsm
+*.xlsb
+
+# Ignore backup and temporary files
+~$*
+*.bak
+*.tmp
+*.log
+
+# Ignore system files (macOS and Windows)
+.DS_Store
+Thumbs.db
+
+# Ignore VBA compiled files
+*.exd
+
+# Ignore Git metadata for submodules
+.git/modules/*
