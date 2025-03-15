@@ -1,12 +1,12 @@
 Sub WriteLog(logType As String, message As String, Optional moduleName As String = "", Optional lineNumber As String = "")
-    ' ログを記録するサブルーチン（エラー発生時のモジュール名・行数も記録）
+    ' ログを記録する（エラー発生時のモジュール名・行番号も記録）
 
     Dim logWs As Worksheet
     Dim lastRow As Long
     Dim logMessage As String
     Dim logTime As String
 
-    ' シートの設定（ログ専用シートを作成）
+    ' シートの設定（ログ専用シート）
     On Error Resume Next
     Set logWs = ThisWorkbook.Sheets("ログ")
     If logWs Is Nothing Then
@@ -24,7 +24,7 @@ Sub WriteLog(logType As String, message As String, Optional moduleName As String
     lastRow = logWs.Cells(logWs.Rows.Count, 1).End(xlUp).Row + 1
     logTime = Format(Now, "yyyy/mm/dd HH:MM:SS")
 
-    ' エラー発生時にモジュール名と行番号を記録
+    ' エラー時にモジュール名と行番号を記録
     If logType = "ERROR" And moduleName <> "" And lineNumber <> "" Then
         logMessage = "[エラー] " & message & " (モジュール: " & moduleName & ", 行: " & lineNumber & ")"
     Else
