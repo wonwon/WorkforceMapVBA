@@ -38,19 +38,23 @@
 ## 3. フォルダ構成
 ```
 AttendanceSystem/
-│── src/                # VBAコードを保存
-│   ├── main.bas        # メイン処理
-│   ├── ui.bas          # ユーザーインターフェース処理
-│   ├── db.bas          # データの読み書き処理
-│   ├── report.bas      # レポート生成処理
-│── data/               # 勤怠データを保存
-│   ├── attendance.xlsx # メインのExcelファイル
-│── docs/               # 仕様書や設計資料
-│   ├── requirements.md # 要件定義
-│   ├── flowchart.png   # システムフロー図
-│── tests/              # テスト用マクロ
-│── README.md           # プロジェクト説明
-│── .gitignore          # Git管理から除外するファイル
+│── src/                     # VBAコードを保存
+│   ├── main.bas             # メイン処理
+│   ├── ui.bas               # ユーザーインターフェース処理
+│   ├── db.bas               # データの読み書き処理
+│   ├── report.bas           # レポート生成処理
+│   ├── log.bas              # 🔹 ログ管理用のVBAコード
+│── data/                    # 勤怠データを保存
+│   ├── attendance.xlsx      # メインのExcelファイル
+│   ├── logs/                # 🔹 ログデータ保存フォルダ（ログファイルを格納）
+│       ├── log_YYYYMMDD.txt # 日別のログファイル
+│       ├── error_log.txt    # エラーログ（継続的に記録）
+│── docs/                    # 仕様書や設計資料
+│   ├── requirements.md      # 要件定義
+│   ├── flowchart.png        # システムフロー図
+│── tests/                   # テスト用マクロ
+│── README.md                # プロジェクト説明
+│── .gitignore               # Git管理から除外するファイル
 ```
 
 ## 4. 作業フロー
@@ -104,6 +108,10 @@ End Sub
 *.xlsx
 *.xlsm
 Thumbs.db
+
+# Ignore log files
+/data/logs/*
+!data/logs/.gitkeep  # ログフォルダは残す（中身はGitにアップしない）
 ```
 
 ### Gitブランチ戦略
@@ -115,10 +123,17 @@ main        # 安定版
     │── feature/report   # レポート機能
 ```
 
-## 7. 運用・メンテナンス
+
+## 7. ログ管理の詳細
+### **🔹 `data/logs/` - Logging System**
+| ファイル名         | 説明                       |
+| ------------------ | -------------------------- |
+| `log_YYYYMMDD.txt` | 日別のログファイル         |
+| `error_log.txt`    | エラーログ（継続的に記録） |
+
+---
+
+## 8. 運用・メンテナンス
 - **定期バックアップ**: Excelファイルのバックアップを定期的に取る。
 - **テストの実施**: `tests/` にテスト用のVBAスクリプトを作成し、変更時に検証。
 - **バージョン管理**: GitHubのリリース機能を使い、安定版を記録。
-
-これらを基に、開発を進めていきます。
-
